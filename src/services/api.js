@@ -1,14 +1,26 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-kbqh.onrender.com/api';
+// Check if we're in the browser environment
+const isBrowser = typeof window !== 'undefined';
 
-// In production environments, we'll use relative paths which will be handled by the hosting platform
-// This allows the frontend to work correctly both in development and production
-const isProduction = import.meta.env.PROD;
-const baseURL = isProduction ? '/api' : API_BASE_URL;
+let API_BASE_URL;
+
+if (isBrowser) {
+  // Use VITE environment variable if available, otherwise use the deployed backend
+  API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-kbqh.onrender.com/api';
+  
+  // For production builds served by Vercel, use relative paths
+  // This allows the frontend to work with whatever domain it's hosted on
+  if (import.meta.env.PROD) {
+    API_BASE_URL = '/api';
+  }
+} else {
+  // For SSR or build time, use the deployed backend
+  API_BASE_URL = 'https://backend-kbqh.onrender.com/api';
+}
 
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
