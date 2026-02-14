@@ -2,8 +2,13 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-kbqh.onrender.com/api';
 
+// In production environments, we'll use relative paths which will be handled by the hosting platform
+// This allows the frontend to work correctly both in development and production
+const isProduction = import.meta.env.PROD;
+const baseURL = isProduction ? '/api' : API_BASE_URL;
+
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
